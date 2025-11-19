@@ -19,7 +19,6 @@ import numpy as np
 import pandas as pd
 from gwpy.timeseries import TimeSeries
 from pycbc.types import TimeSeries as TimeSeries_pycbc
-import bilby
 from tqdm import tqdm
 
 # Custom functions

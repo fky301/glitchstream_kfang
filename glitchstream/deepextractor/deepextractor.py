@@ -24,7 +24,6 @@ from tqdm import tqdm
 from gwpy.timeseries import TimeSeries
 from gwpy.frequencyseries import FrequencySeries
 from pycbc.types import TimeSeries as TimeSeries_pycbc
-import bilby
 
 # Custom functions
 from .utils import plot_q_transform, custom_whiten
@@ -73,16 +72,23 @@ class DeepExtractor(object):
         if model is None:
             self.path_to_model = f"{self.glitch_stream_direcotry}/checkpoints/{self.model_name}/{self.model_checkpoint}"
             
-            if os.path.isfile(self.path_to_model):
-                model = self.path_to_model   
-            elif download_model:
-                self.download_model(self.model_name,self.model_checkpoint)
+            if not os.path.isfile(self.path_to_model):
+                if download_model:
+                    self.download_model(self.model_name,self.model_checkpoint)
+            
+            model = self.path_to_model   
                 
 
         
         if scaler is None:
             self.path_to_scaler = f"{self.glitch_stream_direcotry}/checkpoints/scaler.pkl"
+            
+            if not os.path.isfile(self.path_to_scaler):
+                self.download_scaler()
+            
             scaler = self.path_to_scaler
+            
+
         
         if isinstance(model,str):
             self.path_to_model = model
@@ -212,8 +218,26 @@ class DeepExtractor(object):
             pathlib.Path(directory_path).mkdir(parents=True, exist_ok=True)
         print("Downloading deepextractor model ...")
         if not os.path.isfile(f"{directory_path}/{model_checkpoint}"):
+            
             file_url  = f"{self.deepextractor_git_repository}/checkpoints/{model_name}/{model_checkpoint}"
             file_path = f"{directory_path}/{model_checkpoint}"
+
+            _ = urllib.request.urlretrieve(file_url,file_path)
+
+
+
+    def download_scaler(self,model_directory = "checkpoints"):
+        directory_path = f"{self.deep_extractor_directory}/{model_directory}"
+        
+        if not os.path.isdir(directory_path) :
+            pathlib.Path(directory_path).mkdir(parents=True, exist_ok=True)
+        print("Downloading scaler ...")
+        
+        if not os.path.isfile(f"{directory_path}/scaler.pkl"):
+            
+            file_url  = f"{self.deepextractor_git_repository}/data/scaler.pkl"
+            file_path = f"{directory_path}/scaler.pkl"
+
             _ = urllib.request.urlretrieve(file_url,file_path)
 
             

@@ -1,0 +1,11 @@
+matplotlib==3.9.3
+scienceplots==2.1.1
+numpy==1.26.4
+pandas==2.2.3
+torch==2.1.2
+tqdm==4.67.1
+gwpy==3.0.12
+pycbc==2.7.2
+scikit-learn==1.5.2
+gengli==0.2.0
+

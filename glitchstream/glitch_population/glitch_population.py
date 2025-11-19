@@ -169,7 +169,7 @@ class GlitchPopulation(object):
                 
                 # Filter data
                 if self.glitch_labels is not None:
-                    dataset = dataset[dataset.ml_label.isin(self.glitch_labels)]
+                    dataset = dataset[dataset.label.isin(self.glitch_labels)]
                 
                 if self.ml_confidence is not None:
                     dataset = dataset[dataset.ml_confidence > self.ml_confidence]

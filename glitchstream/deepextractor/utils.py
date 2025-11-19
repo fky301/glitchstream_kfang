@@ -1,5 +1,4 @@
 import numpy as np
-import random
 from math import sin, pi
 import torch
 from scipy.signal import butter, lfilter
@@ -527,7 +526,7 @@ def DeepPlotter(glitch_timeseries,g_hat,psd,glitch_data,SAMPLE_RATE = 4096):
 
     # for col, glitch_type in enumerate(glitch_types):
     col = 0
-    glitch_type = glitch_data.ml_label
+    glitch_type = glitch_data.label
     h_t = np.array(glitch_timeseries.custom_whiten(psd))  # Original 14s strain data
     h_t_centered = h_t[len(h_t)//2-SAMPLE_RATE:len(h_t)//2+SAMPLE_RATE] # The middle 2s for the time series plot
     g_reconstructed = g_hat  # Reconstructed glitch
