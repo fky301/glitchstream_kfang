@@ -2,3 +2,10 @@
 *.tar
 scaler.pkl
 *.csv
+.gwsimenv/
+sample_glitches
+outputs
+download_test
+*.zip
+docs
+scripts

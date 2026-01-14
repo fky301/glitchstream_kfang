@@ -3,6 +3,8 @@ import os
 import sys
 import warnings
 
+import time
+
 # Plotting
 import matplotlib.pyplot as plt
 import scienceplots # Need to import science plots
@@ -108,13 +110,18 @@ class GlitchGenerator(object):
             gps_time,ifo,glitch_metadata = self.glitch_population.sample() # TO DO : add kwargs to glitch population sample
             glitch_metadata = glitch_metadata.squeeze()
 
+            start_time = time.perf_counter()
             psd,glitch_timeseries,glitch = self.glitch_downloader.get_glitch(gps_time,ifo)
-            
+            end_time = time.perf_counter()
+            #print(f"Time Used for Fetching glitch data is {end_time - start_time:.4f} second")
+
             if glitch is None:
                 counter +=1
                 continue
-
+            start_time = time.perf_counter()
             g_hat,n_hat = self.deepextractor(glitch)
+            end_time = time.perf_counter()
+            #print(f"Time Used for DeepExtractor is {end_time - start_time:.4f} second")
 
             if check_residual_background_noise(g_hat,sampling_frequency = self.sampling_frequency):
                 counter+=1

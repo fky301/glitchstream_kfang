@@ -2,6 +2,7 @@
 import os
 import sys
 import warnings
+import time
 # Plotting
 import matplotlib.pyplot as plt
 import scienceplots # Need to import science plots
@@ -59,9 +60,11 @@ class GlitchDownloader(object):
             end_segment           = gps_time + self.psd_duration*0.5
             
             try:
-
+                start_time = time.perf_counter()
                 segment =  self.download_open_data(ifo, start_segment, end_segment)
-                
+                end_time = time.perf_counter()
+                #print(f"Time Used for Downloading glitch data is {end_time - start_time:.4f} second")
+
                 segment_for_psd = segment.crop(start_segment ,start_glitch_segment)
                 glitch          = segment.crop(start_glitch_segment  ,end_segment) 
                 
@@ -83,8 +86,13 @@ class GlitchDownloader(object):
         segment_for_psd_pycbc = TimeSeries_pycbc(segment_for_psd, delta_t=1. / self.sampling_frequency) #PyCBC for whitening 
         glitch_pycbc          = TimeSeries_pycbc(glitch_array, delta_t=1. / self.sampling_frequency)
         
+        #print(f'data kind of glitch timeseries is {glitch_pycbc.kind}')
+        #print(f'length of original glitch timeseries former frame before whiten is {len(segment_for_psd_pycbc)/self.sampling_frequency} second')
         _, psd = segment_for_psd_pycbc.whiten(2,1, remove_corrupted=False, return_psd=True) # Calculate PSD with the data adjacent to the glitch
+        #print(f'length of psd frequencyseries former frame is {len(psd)/self.sampling_frequency}')
+        #print(f'length of reference whiten timeseries former frame is {len(_)/self.sampling_frequency} second')
         white_glitch, _ = glitch_pycbc.custom_whiten(psd, return_psd=True) # Use that PSD to whiten the glitch
+        #print(f'length of whitened glitch is {len(white_glitch)/self.sampling_frequency} seconds')
         
         if np.any(np.isnan(np.array(white_glitch))):
 
@@ -99,6 +107,7 @@ class GlitchDownloader(object):
 
 
         white_glitch_centered = white_glitch.crop(self.pad,self.pad)
+        #print(f'length of centered and whitened glitch is {len(white_glitch_centered)/self.sampling_frequency} seconds')
         
 
         return psd , glitch_pycbc ,np.array(white_glitch_centered)

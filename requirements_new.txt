@@ -1,0 +1,12 @@
+matplotlib
+scienceplots
+numpy
+pandas
+torch
+tqdm
+gwpy
+pycbc
+scikit-learn
+gengli
+jupyter
+

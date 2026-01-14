@@ -430,7 +430,7 @@ def plot_q_transform(data, srate=4096., crop=None, whiten=True, ax=None, colourb
 
         xticklabels = np.linspace(0, dur , 5)
     else:
-        dur = data.duration
+        dur = data.duration.value
 
     # Plotting the Q-transform using the provided axis (ax)
     if ax is None:
